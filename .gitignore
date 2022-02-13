@@ -30,3 +30,7 @@ npm-debug.log*
 /platforms
 /plugins
 /www
+
+src/app/configs/configs.ts
+
+src/app/configs/credentials.ts
