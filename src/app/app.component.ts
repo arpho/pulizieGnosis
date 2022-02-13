@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import {initializeApp} from "firebase/app"
+import {configs} from "./configs/credentials"
 @Component({
   selector: 'app-root',
   templateUrl: 'app.component.html',
@@ -15,5 +16,7 @@ export class AppComponent {
     { title: 'Spam', url: '/folder/Spam', icon: 'warning' },
   ];
   public labels = ['Family', 'Friends', 'Notes', 'Work', 'Travel', 'Reminders'];
-  constructor() {}
+  constructor() {
+    const app = initializeApp(configs.firebase)
+  }
 }
