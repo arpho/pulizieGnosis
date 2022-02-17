@@ -36,3 +36,5 @@ src/app/configs/configs.ts
 src/app/configs/credentials.ts
 
 *.cache
+
+package-lock.json
