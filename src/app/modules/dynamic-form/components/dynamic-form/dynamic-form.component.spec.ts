@@ -6,7 +6,6 @@ import { QuestionFormComponent } from '../question-form-component/question-form-
 import { IonicModule } from '@ionic/angular';
 import { GeoLocationModule } from 'src/app/modules/geo-location/geo-location.module';
 import { ItemModule } from 'src/app/modules/item/item.module';
-import { BarcodeModule } from 'src/app/modules/barcode/barcode.module';
 
 describe('DynamicFormComponent', () => {
   let component: DynamicFormComponent;
@@ -20,7 +19,7 @@ describe('DynamicFormComponent', () => {
         IonicModule,
         GeoLocationModule,
         ItemModule,
-        BarcodeModule]
+        ]
     })
       .compileComponents();
   }));
