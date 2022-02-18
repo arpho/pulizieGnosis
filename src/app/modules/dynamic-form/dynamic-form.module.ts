@@ -5,7 +5,6 @@ import { IonicModule } from '@ionic/angular';
 import { QuestionFormComponent } from './components/question-form-component/question-form-component.component';
 import { DynamicFormComponent } from './components/dynamic-form/dynamic-form.component';
 import { QuestionControlService } from './services/question-control.service';
-import { GeoLocationModule } from '../geo-location/geo-location.module';
 import { ItemModule } from '../item/item.module';
 
 @NgModule({
@@ -14,7 +13,7 @@ import { ItemModule } from '../item/item.module';
     CommonModule,
     IonicModule.forRoot(),
     ReactiveFormsModule,
-    GeoLocationModule,
+    ,
     ItemModule,
   ],
   exports: [QuestionFormComponent, DynamicFormComponent],
