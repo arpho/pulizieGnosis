@@ -13,7 +13,7 @@ import { ItemModule } from '../item/item.module';
     CommonModule,
     IonicModule.forRoot(),
     ReactiveFormsModule,
-    ,
+    
     ItemModule,
   ],
   exports: [QuestionFormComponent, DynamicFormComponent],

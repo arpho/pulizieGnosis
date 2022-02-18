@@ -4,7 +4,6 @@ import { DynamicFormComponent } from './dynamic-form.component';
 import { ReactiveFormsModule } from '@angular/forms';
 import { QuestionFormComponent } from '../question-form-component/question-form-component.component';
 import { IonicModule } from '@ionic/angular';
-import { GeoLocationModule } from 'src/app/modules/geo-location/geo-location.module';
 import { ItemModule } from 'src/app/modules/item/item.module';
 
 describe('DynamicFormComponent', () => {
@@ -17,7 +16,7 @@ describe('DynamicFormComponent', () => {
       imports: [
         ReactiveFormsModule,
         IonicModule,
-        GeoLocationModule,
+        
         ItemModule,
         ]
     })

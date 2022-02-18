@@ -3,7 +3,6 @@
 import * as firebase from 'firebase/app';
 import { ItemModelInterface } from './itemModelInterface';
 import { Observable, BehaviorSubject } from 'rxjs';
-import { OfflineItemModelInterface } from '../../offline/models/offlineItemModelInterface';
 export interface ItemServiceInterface {
 // extra service for complex models
 categoriesService?: ItemServiceInterface
@@ -20,7 +19,7 @@ suppliersListRef?
      * @returns firebase.database reference
      * @deprecated
      */
-    getItem(key: string): firebase.default.database.Reference;
+    getItem(key: string);
 
     /**modifica un item su firebase
      * @param item: ItemModelInterface the item to update
@@ -33,7 +32,7 @@ suppliersListRef?
     deleteItem(key: string);
 
     /** return a void item of the type handled by the service */
-    getDummyItem(): OfflineItemModelInterface|ItemModelInterface;
+    getDummyItem(): ItemModelInterface;
     /**crea un item in firebase
      *
      */
