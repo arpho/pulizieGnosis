@@ -42,7 +42,7 @@ export class UserModel implements ItemModelInterface {
   isArchivable?(): boolean {
     throw new Error('Method not implemented.');
   }
-  setKey(key: string): ItemModelInterface {
+  setKey(key: string): UserModel {
     this.key = key
     return this
   }

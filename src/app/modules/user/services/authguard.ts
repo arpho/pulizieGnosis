@@ -8,6 +8,7 @@ import {
 import { Observable } from "rxjs";
 import firebase from 'firebase/compat/app';
 import { UsersService } from "./users.service";
+import {UserModel} from '../models/userModel'
 
 
 import "firebase/auth";
@@ -28,7 +29,7 @@ export class AuthGuard implements CanActivate {
       firebase.auth().onAuthStateChanged((user: firebase.User) => {
         if (user) {
           console.log('authorised',user)
-          this.User.setLoggedUser(user.uid);
+          this.User.setLoggedUser(new UserModel().setKey(user.uid));
           resolve(true);
         } else {
           console.log('not authorized')
