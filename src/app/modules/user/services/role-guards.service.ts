@@ -1,7 +1,7 @@
 import { Injectable } from "@angular/core";
 import { Router, CanActivate, ActivatedRouteSnapshot } from "@angular/router";
 // import { decode } from "jwt-decode";
-import * as firebase from "firebase/app";
+import firebase from 'firebase/compat/app';
 import "firebase/auth";
 import { UsersService } from "./users.service";
 import { UserModel } from "../models/userModel";
@@ -19,7 +19,7 @@ export class RoleGuardService implements CanActivate {
     console.log('role guard')
     const expectedRole = route.data.expectedRole[0];
 
-    firebase.default.auth().onAuthStateChanged((user: firebase.default.User) => {
+    firebase.auth().onAuthStateChanged((user: firebase.User) => {
       if (user) {
         if (!this.Users.getLoggedUser()) {
         }
@@ -29,7 +29,7 @@ export class RoleGuardService implements CanActivate {
       }
     });
     firebase
-    .default
+    
       .auth()
       .currentUser.getIdTokenResult(true)
       .then(token => {
