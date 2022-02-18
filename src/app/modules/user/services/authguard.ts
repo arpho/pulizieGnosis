@@ -6,8 +6,9 @@ import {
   Router
 } from "@angular/router";
 import { Observable } from "rxjs";
-import * as firebase from "firebase/app";
+import firebase from 'firebase/compat/app';
 import { UsersService } from "./users.service";
+
 
 import "firebase/auth";
 @Injectable({
@@ -15,7 +16,6 @@ import "firebase/auth";
 })
 export class AuthGuard implements CanActivate {
   constructor(private router: Router, public User: UsersService) {}
-
   delay(ms: number) {
     return new Promise(resolve => setTimeout(resolve, ms));
   }
@@ -25,7 +25,7 @@ export class AuthGuard implements CanActivate {
     state: RouterStateSnapshot
   ): boolean | Observable<boolean> | Promise<boolean> {
     return new Promise((resolve, reject) => {
-      firebase.default.auth().onAuthStateChanged((user: firebase.default.User) => {
+      firebase.auth().onAuthStateChanged((user: firebase.User) => {
         if (user) {
           console.log('authorised',user)
           this.User.setLoggedUser(user.uid);

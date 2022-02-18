@@ -6,7 +6,7 @@ import {
   Router
 } from "@angular/router";
 import { Observable } from "rxjs";
-import * as firebase from "firebase/app";
+import firebase from 'firebase/compat/app';
 import "firebase/auth";
 import { UsersService } from "./users.service";
 import { UserModel } from "../models/userModel";
@@ -21,7 +21,7 @@ export class AuthGuard implements CanActivate {
   ): boolean | Observable<boolean> | Promise<boolean> {
     console.log("can activate");
     return new Promise((resolve, reject) => {
-      firebase.default.auth().onAuthStateChanged((user: firebase.default.User) => {
+      firebase.auth().onAuthStateChanged((user: firebase.User) => {
         if (user) {
           console.log("user from auth", user);
           this.users.setLoggedUser(new UserModel(user,user.uid));
