@@ -1,5 +1,5 @@
 import { Injectable, ComponentFactoryResolver } from "@angular/core";
-import * as firebase from "firebase";
+import firebase from 'firebase/compat/app';
 import "firebase/auth";
 import "firebase/database";
 
@@ -7,22 +7,22 @@ import "firebase/database";
   providedIn: "root"
 })
 export class ProfileService {
-  public userProfileReference: firebase.default.database.Reference;
-  public currentUser: firebase.default.User;
+  public userProfileReference: firebase.database.Reference;
+  public currentUser: firebase.User;
 
   constructor() {
-    firebase.default.auth().onAuthStateChanged(user => {
+    firebase.auth().onAuthStateChanged(user => {
       if (user) {
         console.log('user',user.uid)
         this.currentUser = user;
-        this.userProfileReference = firebase.default.database().ref(`/userProfile/${user.uid}/`);
+        this.userProfileReference = firebase.database().ref(`/userProfile/${user.uid}/`);
 
         console.log('profile',this.userProfileReference)
       }
     });
   }
 
-  getUserProfileReference(): firebase.default.database.Reference {
+  getUserProfileReference(): firebase.database.Reference {
 console.log('getting usr profile reference')
     return this.userProfileReference;
   }
@@ -42,7 +42,7 @@ console.log('getting usr profile reference')
   }
 
   updateEmail(newEmail: string, password: string): Promise<any> {
-    const credential: firebase.default.auth.AuthCredential = firebase.default.auth.EmailAuthProvider.credential(
+    const credential: firebase.auth.AuthCredential = firebase.auth.EmailAuthProvider.credential(
       this.currentUser.email,
       password
     );
@@ -59,7 +59,7 @@ console.log('getting usr profile reference')
   }
 
   updatePassword(newPassword: string, oldPassword: string): Promise<any> {
-    const credential: firebase.default.auth.AuthCredential = firebase.default.auth.EmailAuthProvider.credential(
+    const credential: firebase.auth.AuthCredential = firebase.auth.EmailAuthProvider.credential(
       this.currentUser.email,
       oldPassword
     );
