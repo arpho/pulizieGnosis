@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import firebase from 'firebase/compat/app';
-import { getAuth } from "firebase/auth";
+import { getAuth, onAuthStateChanged } from "firebase/auth";
 @Component({
   selector: 'app-folder',
   templateUrl: './folder.page.html',
@@ -10,7 +10,7 @@ import { getAuth } from "firebase/auth";
 export class FolderPage implements OnInit {
   public folder: string;
   log = console.log.bind(document)
-  constructor(private activatedRoute: ActivatedRoute) { }
+  constructor(private activatedRoute: ActivatedRoute,private router:Router) { }
 
   ngOnInit() {
     this.log('initiated folder')
@@ -19,7 +19,15 @@ export class FolderPage implements OnInit {
       this.log('user',user)
     }) */
     const auth = getAuth()
-    this.log('auth',auth)
+ onAuthStateChanged(auth,(user)=>{
+   if(user){
+     this.log('user ok',user)
+   }
+   else{
+     this.log('no user')
+     this.router.navigateByUrl('users/login')
+   }
+ })
   }
 
 }
