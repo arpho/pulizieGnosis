@@ -19,7 +19,7 @@ suppliersListRef?
      * @returns firebase.database reference
      * @deprecated
      */
-    getItem(key: string);
+    getItem(key: string,next:()=>void):void;
 
     /**modifica un item su firebase
      * @param item: ItemModelInterface the item to update

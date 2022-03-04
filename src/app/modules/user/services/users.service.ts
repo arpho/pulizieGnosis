@@ -1,6 +1,7 @@
 // tslint:disable: quotemark
 import { Injectable, OnInit } from "@angular/core";
 import firebase from 'firebase/compat/app';
+import { DatabaseReference, getDatabase,ref, onValue } from "firebase/database";
 import { ItemServiceInterface } from "../../item/models/ItemServiceInterface";
 import { UserModel } from "../models/userModel";
 import { ItemModelInterface } from "../../item/models/itemModelInterface";
@@ -10,7 +11,7 @@ import { BehaviorSubject, Observable } from 'rxjs';
   providedIn: "root"
 })
 export class UsersService implements ItemServiceInterface, OnInit {
-  public usersRef: firebase.database.Reference;
+  public usersRef: DatabaseReference;
   items_list: Array<UserModel> = []
   _items: BehaviorSubject<Array<UserModel>> = new BehaviorSubject([])
   _loggedUser: BehaviorSubject<UserModel> = new BehaviorSubject(new UserModel)
@@ -19,8 +20,10 @@ export class UsersService implements ItemServiceInterface, OnInit {
 
   readonly items: Observable<Array<UserModel>> = this._items.asObservable()
 static loggedUser:UserModel
+db
   constructor() {
-    this.usersRef = firebase.database().ref("/userProfile");
+    this.db = getDatabase()
+    this.usersRef = ref(this.db)//,"/userProfile");
     this.loadItems()
 
   }
@@ -41,15 +44,21 @@ static loggedUser:UserModel
   loadItems() {
     firebase.auth().onAuthStateChanged(user => {
       if (user) {
-        this.usersRef = firebase.database().ref(`/userProfile/`);
-        this.usersRef.on('value', this.populateItems);
+        this.usersRef = ref(this.db,`/userProfile/`);
+
+        //this.usersRef.on('value', this.populateItems);
+        onValue(this.usersRef,(users)=>{
+          this.populateItems(users)
+        })
       }
     });
   }
 
-  getItem(key: string) {
+  getItem(key: string,next) {
     if (this.usersRef) {
-      return this.usersRef.child(key);
+      const itemRef = ref(this.db,'userProfile/'+key)
+      onValue(itemRef,(snap)=>{next(snap)})
+
     }
   }
 
@@ -76,7 +85,7 @@ static loggedUser:UserModel
     return this.usersRef.push(item.serialize());
   }
 
-  getEntitiesList(): firebase.database.Reference {
+  getEntitiesList(): DatabaseReference{
     return this.usersRef;
   }
 
