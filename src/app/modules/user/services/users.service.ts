@@ -1,7 +1,7 @@
 // tslint:disable: quotemark
 import { Injectable, OnInit } from "@angular/core";
 import firebase from 'firebase/compat/app';
-import { DatabaseReference, getDatabase,ref, onValue,remove } from "firebase/database";
+import { DatabaseReference, getDatabase,ref, onValue,remove,set,push } from "firebase/database";
 import { ItemServiceInterface } from "../../item/models/ItemServiceInterface";
 import { UserModel } from "../models/userModel";
 import { ItemModelInterface } from "../../item/models/itemModelInterface";
@@ -85,7 +85,9 @@ db
   }
 
   createItem(item: ItemModelInterface) {
-    return this.usersRef.push(item.serialize());
+
+    const itemRef = ref(this.db,'userProfile/')
+    return push(item.serialize());
   }
 
   getEntitiesList(): DatabaseReference{
