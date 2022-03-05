@@ -95,6 +95,8 @@ db
   }
 
   updateItem(item: ItemModelInterface) {
-    return this.usersRef.child(item.key).update(item.serialize());
+
+    const itemRef = ref(this.db,'userProfile/'+item.key)
+    return set(itemRef,item.serialize());
   }
 }
