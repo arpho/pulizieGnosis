@@ -2,19 +2,20 @@ import { Injectable } from '@angular/core';
 import firebase from 'firebase/compat/app';
 import 'firebase/auth';
 import 'firebase/database';
-import {getAuth,signInWithEmailAndPassword,createUserWithEmailAndPassword,sendEmailVerification} from 'firebase/auth'
+import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, sendEmailVerification, Auth } from 'firebase/auth'
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
+  auth: Auth
 
   constructor() { }
 
   loginUser(email: string, password: string): Promise<any> {
-    const auth=getAuth()
+    this.auth = getAuth()
 
-    return signInWithEmailAndPassword(auth,email,password);
+    return signInWithEmailAndPassword(this.auth, email, password);
   }
 
   resetPassword(email: string): Promise<void> {
@@ -23,20 +24,19 @@ export class AuthService {
 
   signupUser(email: string, password: string): Promise<any> {
     const auth = getAuth()
-    createUserWithEmailAndPassword(auth,email,password).then((newUserCredential=>{
+    createUserWithEmailAndPassword(auth, email, password).then((newUserCredential => {
       sendEmailVerification(newUserCredential.user)
     }))
-    return firebase
-      .auth()
-      .createUserWithEmailAndPassword(email, password)
-      .then(newUserCredential => {
-        newUserCredential.user.sendEmailVerification().then(()=>{
+    return createUserWithEmailAndPassword(this.auth, email, password)
+      .then((user) => {
+        const User = user.user
+        sendEmailVerification(User).then(() => {
           firebase
-          .database()
-          .ref(`/userProfile/${newUserCredential.user.uid}/email`)
-          .set(email);
+            .database()
+            .ref(`/userProfile/${user.user.uid}/email`)
+            .set(email);
         });
-        
+
       })
       .catch(error => {
         console.error(error);
@@ -47,7 +47,7 @@ export class AuthService {
   logoutUser(): Promise<void> {
     const userId: string = firebase.auth().currentUser.uid;
     firebase
-    
+
       .database()
       .ref(`/userProfile/${userId}`)
       .off();
