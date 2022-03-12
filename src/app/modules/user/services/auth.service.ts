@@ -2,7 +2,9 @@ import { Injectable } from '@angular/core';
 import firebase from 'firebase/compat/app';
 import 'firebase/auth';
 import 'firebase/database';
+import { DatabaseReference, getDatabase, ref, push } from "firebase/database";
 import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, sendEmailVerification, Auth } from 'firebase/auth'
+import { UserModel } from '../models/userModel'
 
 @Injectable({
   providedIn: 'root'
@@ -29,13 +31,19 @@ export class AuthService {
     }))
     return createUserWithEmailAndPassword(this.auth, email, password)
       .then((user) => {
-        const User = user.user
-        sendEmailVerification(User).then(() => {
-          firebase
-            .database()
-            .ref(`/userProfile/${user.user.uid}/email`)
-            .set(email);
-        });
+        if (user != null) {
+          const JustCreatedUser = user.user
+          sendEmailVerification(JustCreatedUser).then(() => {
+            const db = getDatabase()
+            const newUser = new UserModel(JustCreatedUser)
+            const usersRef = ref(db, '/userProfile')
+            push(usersRef, newUser.serialize())
+            firebase
+              .database()
+              .ref(`/userProfile/${user.user.uid}/email`)
+              .set(email);
+          });
+        }
 
       })
       .catch(error => {
