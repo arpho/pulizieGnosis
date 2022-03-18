@@ -96,7 +96,7 @@ export class UserModel implements ItemModelInterface {
     return {
       key: this.key,
       uid: this.uid || this.key,
-      birthDate: this.birthDate.serialize(),
+      birthDate: this.birthDate?this.birthDate.serialize():'',
       email: this.email,
       firstName: this.firstName,
       lastName: this.lastName,
