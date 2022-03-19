@@ -4,7 +4,7 @@ import { Observable } from 'rxjs';
 import 'firebase/auth';
 import 'firebase/database';
 import { DatabaseReference, getDatabase, ref, push } from "firebase/database";
-import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, sendEmailVerification, Auth } from 'firebase/auth'
+import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, sendEmailVerification, Auth, UserCredential } from 'firebase/auth'
 import { UserModel } from '../models/userModel'
 
 @Injectable({
@@ -26,44 +26,26 @@ export class AuthService {
   }
 
   signupUser(email: string, password: string): any {
-   /*  const auth = getAuth()
-    createUserWithEmailAndPassword(auth, email, password).then((newUserCredential => {
-      sendEmailVerification(newUserCredential.user)
-    })) */
-
-    this.createUserObserver(email, password).subscribe({
+   return this.createUserObserver(email, password).subscribe({
       next: v => { console.log('creato user', v) 
       sendEmailVerification(v['user'])
+      const db = getDatabase()
+            const newUser = new UserModel(v['uswer'])
+            const usersRef = ref(db, '/userProfile')
+            push(usersRef, newUser.serialize())
     },
       error: e => { console.error('errore', e) },
       complete: () => { console.log('ok') }
     })
-    /* return createUserWithEmailAndPassword(this.auth, email, password)
-      .then((user) => {
-        console.log('creato', user)
-        if (user != null) {
-          const JustCreatedUser = user.user
-          console.log('new user', JustCreatedUser)
-          sendEmailVerification(JustCreatedUser).then(() => {
-            const db = getDatabase()
-            const newUser = new UserModel(JustCreatedUser)
-            const usersRef = ref(db, '/userProfile')
-            push(usersRef, newUser.serialize())
-          });
-        }
-      })
-      .catch(error => {
-        console.log('errore', error);
-        throw new Error(error);
-      }); */
+
   }
 
 
-  createUserObserver(email, pass) {
+  createUserObserver(email, pass): Observable<unknown>{
     const auth = getAuth()
     const observer = new Observable(subscriber => {
       createUserWithEmailAndPassword(auth, email, pass)
-        .then((userCredential) => {
+        .then((userCredential:UserCredential) => {
           subscriber.next(userCredential);
           subscriber.complete();
         })
