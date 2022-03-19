@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import firebase from 'firebase/compat/app';
+import { Observable } from 'rxjs';
 import 'firebase/auth';
 import 'firebase/database';
 import { DatabaseReference, getDatabase, ref, push } from "firebase/database";
@@ -24,32 +25,55 @@ export class AuthService {
     return firebase.auth().sendPasswordResetEmail(email);
   }
 
-  signupUser(email: string, password: string): Promise<any> {
-    const auth = getAuth()
+  signupUser(email: string, password: string): any {
+   /*  const auth = getAuth()
     createUserWithEmailAndPassword(auth, email, password).then((newUserCredential => {
       sendEmailVerification(newUserCredential.user)
-    }))
-    return createUserWithEmailAndPassword(this.auth, email, password)
+    })) */
+
+    this.createUserObserver(email, password).subscribe({
+      next: v => { console.log('creato user', v) 
+      sendEmailVerification(v['user'])
+    },
+      error: e => { console.error('errore', e) },
+      complete: () => { console.log('ok') }
+    })
+    /* return createUserWithEmailAndPassword(this.auth, email, password)
       .then((user) => {
+        console.log('creato', user)
         if (user != null) {
           const JustCreatedUser = user.user
+          console.log('new user', JustCreatedUser)
           sendEmailVerification(JustCreatedUser).then(() => {
             const db = getDatabase()
             const newUser = new UserModel(JustCreatedUser)
             const usersRef = ref(db, '/userProfile')
             push(usersRef, newUser.serialize())
-            firebase
-              .database()
-              .ref(`/userProfile/${user.user.uid}/email`)
-              .set(email);
           });
         }
-
       })
       .catch(error => {
-        console.error(error);
+        console.log('errore', error);
         throw new Error(error);
-      });
+      }); */
+  }
+
+
+  createUserObserver(email, pass) {
+    const auth = getAuth()
+    const observer = new Observable(subscriber => {
+      createUserWithEmailAndPassword(auth, email, pass)
+        .then((userCredential) => {
+          subscriber.next(userCredential);
+          subscriber.complete();
+        })
+        .catch((error) => {
+          subscriber.error(error);
+          subscriber.complete();
+        });
+    });
+
+    return observer;
   }
 
   logoutUser(): Promise<void> {

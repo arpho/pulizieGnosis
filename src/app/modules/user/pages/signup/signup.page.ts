@@ -10,7 +10,7 @@ import { Router } from '@angular/router';
 })
 export class SignupPage implements OnInit {
   public signupForm: FormGroup;
-  public loading: any;
+  public modal: any;
   constructor(
     private authService: AuthService,
     private loadingCtrl: LoadingController,
@@ -42,12 +42,13 @@ export class SignupPage implements OnInit {
       const password: string = signupForm.value.password;
       this.authService.signupUser(email, password).then(
         () => {
-          this.loading.dismiss().then(() => {
+          console.log('loading',this.modal)
+          this.modal.dismiss().then(() => {
             this.router.navigateByUrl('home');
           });
         },
         error => {
-          this.loading.dismiss().then(async () => {
+          this.modal.dismiss().then(async () => {
             const alert = await this.alertCtrl.create({
               message: error.message,
               buttons: [{ text: 'Ok', role: 'cancel' }],
@@ -56,8 +57,8 @@ export class SignupPage implements OnInit {
           });
         }
       );
-      this.loading = await this.loadingCtrl.create();
-      await this.loading.present();
+      this.modal = await this.loadingCtrl.create();
+      await this.modal.present();
     }
   }
 }
