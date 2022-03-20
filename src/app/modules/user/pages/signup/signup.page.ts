@@ -40,14 +40,16 @@ export class SignupPage implements OnInit {
     } else {
       const email: string = signupForm.value.email;
       const password: string = signupForm.value.password;
-      this.authService.signupUser(email, password).then(
-        () => {
-          console.log('loading',this.modal)
-          this.modal.dismiss().then(() => {
-            this.router.navigateByUrl('home');
-          });
-        },
-        error => {
+      const successHandler = (v) => {
+
+        console.log('loading', this.modal)
+        this.modal.dismiss().then(() => {
+          this.router.navigateByUrl('home');
+
+        })
+      }
+
+        const errorHandler = (error) => {
           this.modal.dismiss().then(async () => {
             const alert = await this.alertCtrl.create({
               message: error.message,
@@ -56,9 +58,25 @@ export class SignupPage implements OnInit {
             await alert.present();
           });
         }
-      );
-      this.modal = await this.loadingCtrl.create();
-      await this.modal.present();
+        this.authService.signupUser(email, password, successHandler, errorHandler).then(
+          () => {
+            console.log('loading', this.modal)
+            this.modal.dismiss().then(() => {
+              this.router.navigateByUrl('home');
+            });
+          },
+          error => {
+            this.modal.dismiss().then(async () => {
+              const alert = await this.alertCtrl.create({
+                message: error.message,
+                buttons: [{ text: 'Ok', role: 'cancel' }],
+              });
+              await alert.present();
+            });
+          }
+        );
+        this.modal = await this.loadingCtrl.create();
+        await this.modal.present();
+      }
     }
   }
-}

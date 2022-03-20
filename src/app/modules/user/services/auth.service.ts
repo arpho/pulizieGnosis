@@ -25,27 +25,42 @@ export class AuthService {
     return firebase.auth().sendPasswordResetEmail(email);
   }
 
-  signupUser(email: string, password: string): any {
-   return this.createUserObserver(email, password).subscribe({
-      next: v => { console.log('creato user', v) 
-      sendEmailVerification(v['user'])
-      const db = getDatabase()
-            const newUser = new UserModel(v['uswer'])
-            const usersRef = ref(db, '/userProfile')
-            push(usersRef, newUser.serialize())
-    },
-      error: e => { console.error('errore', e) },
-      complete: () => { console.log('ok') }
+  signupUser(email: string, password: string, next?, error?, complete?): any {
+    return this.createUserObserver(email, password).subscribe({
+      next: v => {
+        console.log('creato user', v)
+        sendEmailVerification(v['user'])
+        const db = getDatabase()
+        const newUser = new UserModel(v['uswer'])
+        const usersRef = ref(db, '/userProfile')
+        push(usersRef, newUser.serialize())
+        if (next) {
+          next(v['user'])
+        }
+      },
+      error: e => {
+        console.error('errore', e)
+
+        if (error) {
+          error(e)
+        }
+      },
+      complete: () => {
+        console.log('ok')
+        if (complete) {
+          complete()
+        }
+      }
     })
 
   }
 
 
-  createUserObserver(email, pass): Observable<unknown>{
+  createUserObserver(email, pass): Observable<unknown> {
     const auth = getAuth()
     const observer = new Observable(subscriber => {
       createUserWithEmailAndPassword(auth, email, pass)
-        .then((userCredential:UserCredential) => {
+        .then((userCredential: UserCredential) => {
           subscriber.next(userCredential);
           subscriber.complete();
         })
