@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import firebase from 'firebase/compat/app';
-import { Observable } from 'rxjs';
+import { Observable, Subscription } from 'rxjs';
 import 'firebase/auth';
 import 'firebase/database';
 import { DatabaseReference, getDatabase, ref, push } from "firebase/database";
@@ -25,14 +25,15 @@ export class AuthService {
     return firebase.auth().sendPasswordResetEmail(email);
   }
 
-  signupUser(email: string, password: string, next?, error?, complete?): any {
+  signupUser(email: string, password: string, next?, error?, complete?): Subscription {
     return this.createUserObserver(email, password).subscribe({
       next: v => {
         console.log('creato user', v)
         sendEmailVerification(v['user'])
         const db = getDatabase()
-        const newUser = new UserModel(v['uswer'])
+        const newUser = new UserModel(v['user']).load(v['user'])
         const usersRef = ref(db, '/userProfile')
+        console.log('new user',newUser.serialize())
         push(usersRef, newUser.serialize())
         if (next) {
           next(v['user'])

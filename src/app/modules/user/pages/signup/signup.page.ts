@@ -1,16 +1,18 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { AuthService } from '../../services/auth.service';
 import { LoadingController, AlertController } from '@ionic/angular';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
+import { Subscriber, Subscription } from 'rxjs';
 @Component({
   selector: 'app-signup',
   templateUrl: './signup.page.html',
   styleUrls: ['./signup.page.scss'],
 })
-export class SignupPage implements OnInit {
+export class SignupPage implements OnInit,OnDestroy {
   public signupForm: FormGroup;
   public modal: any;
+  subscription:Subscription
   constructor(
     private authService: AuthService,
     private loadingCtrl: LoadingController,
@@ -28,6 +30,11 @@ export class SignupPage implements OnInit {
         Validators.compose([Validators.minLength(6), Validators.required]),
       ],
     });
+  }
+  ngOnDestroy(): void {
+  if(this.subscription){
+    this.subscription.unsubscribe()
+  }
   }
 
   ngOnInit() { }
@@ -58,23 +65,7 @@ export class SignupPage implements OnInit {
             await alert.present();
           });
         }
-        this.authService.signupUser(email, password, successHandler, errorHandler).then(
-          () => {
-            console.log('loading', this.modal)
-            this.modal.dismiss().then(() => {
-              this.router.navigateByUrl('home');
-            });
-          },
-          error => {
-            this.modal.dismiss().then(async () => {
-              const alert = await this.alertCtrl.create({
-                message: error.message,
-                buttons: [{ text: 'Ok', role: 'cancel' }],
-              });
-              await alert.present();
-            });
-          }
-        );
+        this.authService.signupUser(email, password, successHandler, errorHandler)
         this.modal = await this.loadingCtrl.create();
         await this.modal.present();
       }

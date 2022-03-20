@@ -96,10 +96,10 @@ export class UserModel implements ItemModelInterface {
     return {
       key: this.key,
       uid: this.uid || this.key,
-      birthDate: this.birthDate?this.birthDate.serialize():'',
+      birthDate: this.birthDate ? this.birthDate.serialize() : '',
       email: this.email,
-      firstName: this.firstName,
-      lastName: this.lastName,
+      firstName: this.firstName ?? '',
+      lastName: this.lastName ?? '',
       enabled: this.enabled,
       level: this.role.value
     };
@@ -117,6 +117,8 @@ export class UserModel implements ItemModelInterface {
   load(args) {
     Object.assign(this, args)
     this.role = this.roleFactory(this.level)
+    this.key = this.key ?? this.uid
+    this.enabled = Boolean(this.enabled)
     return this;
 
   }
