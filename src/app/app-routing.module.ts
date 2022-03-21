@@ -8,6 +8,9 @@ const routes: Routes = [
     redirectTo: 'folder/Inbox',
     pathMatch: 'full'
   },
+  {path:'home',
+redirectTo:'folder/Inbox',
+pathMatch:'full'},
   {path:"users",
   
   loadChildren:()=>import('./modules/user/user.module').then(m=>m.UserModule)

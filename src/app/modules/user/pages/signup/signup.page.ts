@@ -65,7 +65,8 @@ export class SignupPage implements OnInit,OnDestroy {
             await alert.present();
           });
         }
-        this.authService.signupUser(email, password, successHandler, errorHandler)
+        const handlers = {next:successHandler,error:errorHandler}
+        this.authService.signupUser(email, password, handlers)
         this.modal = await this.loadingCtrl.create();
         await this.modal.present();
       }

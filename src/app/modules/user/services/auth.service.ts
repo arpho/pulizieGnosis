@@ -25,7 +25,7 @@ export class AuthService {
     return firebase.auth().sendPasswordResetEmail(email);
   }
 
-  signupUser(email: string, password: string, next?, error?, complete?): Subscription {
+  signupUser(email: string, password: string, handlers:{next?, error?, complete?}): Subscription {
     return this.createUserObserver(email, password).subscribe({
       next: v => {
         console.log('creato user', v)
@@ -35,21 +35,21 @@ export class AuthService {
         const usersRef = ref(db, '/userProfile')
         console.log('new user',newUser.serialize())
         push(usersRef, newUser.serialize())
-        if (next) {
-          next(v['user'])
+        if (handlers.next) {
+          handlers.next(v['user'])
         }
       },
       error: e => {
         console.error('errore', e)
 
-        if (error) {
-          error(e)
+        if (handlers.error) {
+          handlers.error(e)
         }
       },
       complete: () => {
         console.log('ok')
-        if (complete) {
-          complete()
+        if (handlers.complete) {
+          handlers.complete()
         }
       }
     })
